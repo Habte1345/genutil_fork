@@ -1,7 +1,7 @@
 # Adapted for numpy/ma/cdms2 by convertcdms.py
 import MV2
 import numpy.ma
-import cdms2
+import cdms2 
 from .grower import grower  
 import numpy
 from . import arrayindexing
@@ -9,6 +9,31 @@ from . import array_indexing_emulate as array_indexing
 from .stats_checker import __checker, StatisticsError
 
 # This is habtamu tamiru
+
+# kge objective    
+
+def kge_2012(model, obs, axis="xy"):
+    sim_mean = np.mean(model, axis=0, dtype=np.float64)
+    obs_mean = np.mean(obs, dtype=np.float64)
+    r_num = np.sum((model - sim_mean) * (obs - obs_mean),
+                axis=0, dtype=np.float64)
+    r_den = np.sqrt(np.sum((model - sim_mean) ** 2,
+                        axis=0, dtype=np.float64)
+                    * np.sum((obs - obs_mean) ** 2,
+                            dtype=np.float64))
+    r = r_num / r_den
+    gamma = ((np.std(model, axis=0, dtype=np.float64) / sim_mean)
+            / (np.std(obs, dtype=np.float64) / obs_mean))
+    beta = (np.mean(model, axis=0, dtype=np.float64)
+            / np.mean(obs, axis=0, dtype=np.float64))
+    kgeprime_ = 1 - np.sqrt((r - 1) ** 2 + (gamma - 1) ** 2 + (beta - 1) ** 2)
+
+    return kgeprime_
+
+
+
+
+
 
 def __gammln1(x):
     cof = [76.18009172947146, -86.50532032941677,
